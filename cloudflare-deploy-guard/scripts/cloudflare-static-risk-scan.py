@@ -23,8 +23,12 @@ EXCLUDE_DIRS = {
 TEXT_EXTS = {
     ".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".mts", ".cts",
     ".toml", ".json", ".jsonc", ".yaml", ".yml", ".md", ".txt", ".tf",
-    ".sh", ".bash", ".env", ".vars",
+    ".sh", ".bash", ".env", ".vars", ".service", ".socket", ".timer", ".conf",
 }
+TEXT_FILE_NAMES = {
+    ".envrc", ".bashrc", ".bash_profile", ".profile", ".zshrc", ".zprofile", ".zshenv",
+}
+TEXT_FILE_PREFIXES = ("dockerfile", "containerfile")
 MAX_FILE_BYTES = 1_000_000
 
 @dataclass
@@ -77,6 +81,9 @@ RULES: list[Rule] = [
     Rule("CF-SEC-001", "critical", "Secret-looking key in config/source", r"(api[_-]?key|secret|token|password)\s*[:=]", "秘密値はwrangler varsやsourceに置かず、Cloudflare Secrets/Secrets Store/CI secretsを使う。値は出力しない。"),
     Rule("CF-SEC-002", "high", "Cloudflare credential variable", r"CLOUDFLARE_API_KEY|CF_API_KEY|CLOUDFLARE_API_TOKEN|CF_API_TOKEN", "Global API Keyではなく最小権限API tokenを使い、CI/MCP/staging/prodで分離する。"),
     Rule("CF-SEC-003", "medium", "CORS wildcard", r"Access-Control-Allow-Origin['\"]?\s*[:,=]\s*['\"]\*|allowedOrigins?\s*[:=]\s*\[[^\]]*['\"]\*['\"]", "CORSは必要originだけに限定し、credentialsとの組み合わせを確認する。"),
+
+    Rule("CF-TUNNEL-001", "critical", "Cloudflare Tunnel token inline", r"(?:cloudflared|cloudflare/cloudflared(?::[\w.\-]+)?)\b[^\n]*(?:service\s+install\s+[\"\']?(?!<|\$)[A-Za-z0-9._\-]{20,}[\"\']?|--token(?!-file)(?:\s+|=)\s*[\"\']?(?!<|\$)[A-Za-z0-9._\-]{20,}[\"\']?)|command\s*:\s*(?:\[[^\n\]]*|[^\n]*)\btunnel\b[^\n]*--token(?!-file)[\"'\s,:=]+[\"']?(?!<|\$)[A-Za-z0-9._\-]{20,}|TUNNEL_TOKEN\s*[:=]\s*[\"\']?(?!<|\$)[A-Za-z0-9._\-]{20,}[\"\']?", "Tunnel tokenはsecret扱い。repo、shell history、systemd unit、Docker commandへ平文で残さず、漏洩時はrotateする。"),
+    Rule("CF-TUNNEL-002", "high", "Tunnel origin TLS verification disabled", r"noTLSVerify\s*[:=]\s*true|no-tls-verify\s*:\s*true", "Tunnel originのTLS検証無効化は例外扱い。Full(strict)、正しいorigin証明書、限定networkで代替できないか確認する。"),
 ]
 
 SECRET_FILE_NAMES = {
@@ -92,11 +99,22 @@ def iter_files(root: Path) -> Iterable[Path]:
         dirnames[:] = [d for d in dirnames if d not in EXCLUDE_DIRS]
         for name in filenames:
             path = Path(dirpath) / name
-            if path.name in SECRET_FILE_NAMES or path.suffix.lower() in TEXT_EXTS:
+            lower_name = path.name.lower()
+            if (
+                path.name in SECRET_FILE_NAMES
+                or path.name in TEXT_FILE_NAMES
+                or lower_name.startswith(TEXT_FILE_PREFIXES)
+                or lower_name.startswith(".env.")
+                or lower_name.startswith(".dev.vars")
+                or path.suffix.lower() in TEXT_EXTS
+            ):
                 yield path
 
 
 def safe_excerpt(line: str) -> str:
+    line = re.sub(r"(--token(?!-file)[\"'\s,:=]+)([\"']?)(?!<|\$)[A-Za-z0-9._\-]{20,}", r"\1\2<redacted>", line, flags=re.I)
+    line = re.sub(r"((?:cloudflared|cloudflare/cloudflared(?::[\w.\-]+)?)\b[^\n]*?--token\s+)\S+", r"\1<redacted>", line, flags=re.I)
+    line = re.sub(r"(cloudflared\s+service\s+install\s+)(?!--token\b)\S+", r"\1<redacted>", line, flags=re.I)
     # Avoid leaking values after separators for secret-looking lines.
     if re.search(r"api[_-]?key|secret|token|password", line, re.I):
         line = re.sub(r"([:=]\s*)(['\"]?)[^'\"\s]+", r"\1<redacted>", line)
@@ -140,6 +158,43 @@ def scan(root: Path) -> list[Finding]:
                     recommendation=rule.recommendation,
                     excerpt=safe_excerpt(line),
                 ))
+        for idx, line in enumerate(lines):
+            command_match = re.match(r"^(\s*)command\s*:\s*([>|][+-]?)?\s*$", line)
+            if not command_match:
+                continue
+            base_indent = len(command_match.group(1))
+            block: list[tuple[int, str]] = []
+            for j in range(idx + 1, min(len(lines), idx + 42)):
+                child = lines[j]
+                if child.strip() and len(child) - len(child.lstrip(" ")) <= base_indent:
+                    break
+                block.append((j, child))
+            block_text = "\n".join(child for _, child in block)
+            if not re.search(r"\btunnel\b", block_text, re.I) or not re.search(r"--token(?!-file)\b", block_text, re.I):
+                continue
+            token_line = None
+            for n, (j, child) in enumerate(block):
+                if re.search(r"--token(?!-file)[\"'\s,:=]+[\"']?(?!<|\$)[A-Za-z0-9._\-]{20,}", child, re.I):
+                    token_line = j
+                    break
+                if re.search(r"--token(?!-file)\b", child, re.I):
+                    for k, following in block[n + 1:n + 4]:
+                        if re.search(r"^\s*-\s*[\"\']?(?!<|\$)[A-Za-z0-9._\-]{20,}[\"\']?\s*$", following):
+                            token_line = k
+                            break
+                    if token_line is not None:
+                        break
+            if token_line is None:
+                continue
+            findings.append(Finding(
+                id="CF-TUNNEL-001",
+                severity="critical",
+                title="Cloudflare Tunnel token inline",
+                path=rel,
+                line=token_line + 1,
+                recommendation="Tunnel tokenはsecret扱い。repo、shell history、systemd unit、Docker commandへ平文で残さず、漏洩時はrotateする。",
+                excerpt="<redacted tunnel token>",
+            ))
     return findings
 
 

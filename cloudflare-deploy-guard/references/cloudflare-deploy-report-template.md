@@ -46,6 +46,7 @@ DEPLOY: GO | NO-GO
 | WAF / Rate Limiting | | | |
 | Bot / AI crawler controls | | | |
 | Origin / DNS / SSL | | | |
+| Tunnel / Access / firewall | | | |
 | Access / Turnstile | | | |
 
 ## Checks performed
@@ -55,6 +56,7 @@ DEPLOY: GO | NO-GO
 - Workers/Pages inventory:
 - Storage/data inventory:
 - Security/traffic inventory:
+- Tunnel/origin firewall inventory:
 - Rollback drill:
 
 ## Required fixes before GO

@@ -6,7 +6,7 @@
 
 *Latest stable. Cost-aware. Security-architectural.*
 
-![snapshot](https://img.shields.io/badge/snapshot-2026--05--06-black)
+![snapshot](https://img.shields.io/badge/snapshot-2026--05--07-black)
 ![rust](https://img.shields.io/badge/rust-latest%20stable%20policy-orange)
 ![go](https://img.shields.io/badge/go-1.26.2-00ADD8)
 ![node](https://img.shields.io/badge/node-24%20LTS-339933)
@@ -19,7 +19,7 @@
 
 ---
 
-> 8 Skills. 4 production deploy guards. 3 language knowledge packs. 1 repo hygiene guard. 132 static-scan rules. 60+ SQL audit checks. 80+ Rust crates / 120+ npm package entries / 40+ Go modules — knowledge packs は version register、snapshot 日付、自己採点付き。
+> 8 Skills. 4 production deploy guards. 3 language knowledge packs. 1 repo hygiene guard. 134 static-scan rules. 60+ SQL audit checks. 80+ Rust crates / 120+ npm package entries / 40+ Go modules — knowledge packs は version register、snapshot 日付、自己採点付き。
 >
 > **READMEではなく、防具であり、武器であり、履歴書です。**
 
@@ -53,7 +53,7 @@ REV DevSkills は、これらを「人間の経験と勘」ではなく **静的
 | カテゴリ | Skill | 役割 | スナップショット |
 |---|---|---|---|
 | Repo Hygiene Guard | [`.agents/skills/naming-normalization-guard/`](.agents/skills/naming-normalization-guard/) | Skill / knowledge pack 追加・リネーム時の規約、参照更新、stale name check を agent に徹底させる | 規約 |
-| Deploy Guard | [`cloudflare-deploy-guard/`](cloudflare-deploy-guard/) | Workers / Pages / R2 / KV / D1 / Queues / Images で課金・Bot・cache・deploy 事故を潰す | 2026-05-06 |
+| Deploy Guard | [`cloudflare-deploy-guard/`](cloudflare-deploy-guard/) | Workers / Pages / R2 / KV / D1 / Queues / Images / Tunnel で課金・Bot・cache・origin露出・deploy 事故を潰す | 2026-05-07 |
 | Deploy Guard | [`codex-app-server-guard/`](codex-app-server-guard/) | Codex `app-server` を独自 UI / 社内 tool / agent 基盤へ組み込む前に auth / approval / sandbox / usage を点検する | 2026-05-06 |
 | Knowledge Pack | [`go-skills-knowledge-pack/`](go-skills-knowledge-pack/) | Go で高負荷 API / crawler / service daemon / CLI / workflow / security-sensitive backend を作るための判断基準 | 2026-05-06 / v0.1.1 |
 | Deploy Guard | [`payload-cms-deploy-guard/`](payload-cms-deploy-guard/) | Payload CMS の access control / Local API / GraphQL / uploads / jobs / migration / storage cost を本番前に潰す | 2026-05-06 |
@@ -100,7 +100,7 @@ REV DevSkills は、これらを「人間の経験と勘」ではなく **静的
 
 4 つの Deploy Guard は、対象サービスごとの違いを残しつつ、同じゲート構造で動きます。
 
-1. **静的リスクスキャン** — `*-static-risk-scan.py --markdown --fail-on high`。リポジトリのコード・設定ファイルを走査し、危険パターンを Markdown / JSON で出力（4 ガード合計 **132 ルール**）
+1. **静的リスクスキャン** — `*-static-risk-scan.py --markdown --fail-on high`。リポジトリのコード・設定ファイルを走査し、危険パターンを Markdown / JSON で出力（4 ガード合計 **134 ルール**）
 2. **動的監査** — DB の RLS / GRANT / index、本番ホストの CORS / GraphQL 到達性、`app-server` の stdio smoke test と WebSocket 露出設定の点検
 3. **コストシナリオ試算** — `expected` / `10x` / bot-abuse / crawler / bug-loop / migration-failure など、guard ごとのリスクに合わせて月次コストを試算
 4. **リスクマトリクス + チェックリスト** — Critical blocker と High risk を明文化、判定基準を統一フォーマットで管理
@@ -110,10 +110,10 @@ REV DevSkills は、これらを「人間の経験と勘」ではなく **静的
 
 ### cloudflare-deploy-guard
 
-Cloudflare は低コストで始めやすい代わりに、課金は **「ユーザー数」ではなく「課金メーターに触れる回数」** で爆発します。小規模サイトでも、画像変換 URL / KV list / DO write / Queue loop / D1 scan / R2 GET/List / Worker route 過大 / AI crawler / 外部 API 再試行で高額化する。検査項目、ブロッカー、コストシナリオで、Bot 一回が数千ドルに化ける時限爆弾を投入前に止めます。
+Cloudflare は低コストで始めやすい代わりに、課金は **「ユーザー数」ではなく「課金メーターに触れる回数」** で爆発します。小規模サイトでも、画像変換 URL / KV list / DO write / Queue loop / D1 scan / R2 GET/List / Worker route 過大 / AI crawler / 外部 API 再試行で高額化する。Cloudflare Tunnel / Access / origin firewall もVPSの直叩き防止として扱い、Bot 一回が数千ドルに化ける時限爆弾とorigin露出を投入前に止めます。
 
 - `scripts/cloudflare-static-risk-scan.py` — wrangler.toml / next.config / Worker コードの走査（秘密値は出力しない）
-- `references/cloudflare-cost-security-checklist.md` / `cloudflare-risk-matrix.md` / `cloudflare-deploy-report-template.md`
+- `references/cloudflare-cost-security-checklist.md` / `cloudflare-risk-matrix.md` / `cloudflare-deploy-report-template.md` / `cloudflare-tunnel-origin-lockdown.md`
 
 ### codex-app-server-guard
 

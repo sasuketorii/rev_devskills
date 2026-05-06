@@ -55,18 +55,30 @@ Cloudflareは低コストで始めやすいが、従量課金の爆発は「ユ�
 
 対策: route最小化、staticはcache直配信、manifest、Cache Rules、WAF。
 
+### Cloudflare Tunnel / Origin lockdown
+
+- VPS/originの80/443/管理portをpublic Internetへ開けたまま、Cloudflare proxyだけに頼る。
+- Origin IPがDNS履歴、メール、外部API callback、旧staging domainから漏れている。
+- `cloudflared` tokenをrepo、README、shell history、systemd unit、Docker commandへ平文で残す。
+- Tunnel ingressのcatch-allがdeny/404ではなく内部serviceへ流れる。
+- 管理画面、SSH、DB admin、CMS adminをTunnelで公開しているのにAccessやMFAがない。
+- `cloudflared` health、connector数、systemd restart loopを監視していない。
+
+対策: Cloudflare Tunnelを使う場合はpublic inboundをdenyし、connector用outbound `7844` TCP/UDPを許可する。更新、API操作、Access JWT検証、診断が必要な場合は `api.cloudflare.com`、`update.argotunnel.com`、GitHub、`<team>.cloudflareaccess.com` などへのHTTPS egressを用途別に明示許可する。管理はTailscale/Access/限定SSHに分離、tokenはsecret管理、ingressはhostnameごとに明示してcatch-all deny/404、health/ログ/replicaを監視。
+
 ## 2. デプロイ前に必ず作るもの
 
 1. 課金対象棚卸し表
 2. 通常/10倍/Bot/Bug loopのコスト試算
 3. Budget alerts + Usage notifications
 4. WAF/Rate Limiting/Bot/AI crawler設定
-5. キルスイッチ一覧
-6. ロールバック手順
-7. Cloudflare MCP/API読み取り結果
-8. Security diff
-9. 監視メトリクスと閾値
-10. 残余リスク
+5. Cloudflare Tunnel / origin firewall / Access / Tailscale の到達性設計
+6. キルスイッチ一覧
+7. ロールバック手順
+8. Cloudflare MCP/API読み取り結果
+9. Security diff
+10. 監視メトリクスと閾値
+11. 残余リスク
 
 ## 3. 最低限の監視メトリクス
 
@@ -78,6 +90,7 @@ Cloudflareは低コストで始めやすいが、従量課金の爆発は「ユ�
 - DO/D1: rows read、rows written、storage。
 - Queues: operations、backlog、retries、DLQ、consumer errors。
 - WAF/Bot: challenged/blocked/allowed、top UA/IP/ASN/path。
+- Tunnel/Access: connector health、connector数、Access auth logs、tunnel audit logs、cloudflared restart count、origin firewall denies。
 
 ## 4. 推奨Rate Limit例
 

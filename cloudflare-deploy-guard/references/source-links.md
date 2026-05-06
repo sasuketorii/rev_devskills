@@ -22,6 +22,12 @@
 - Cloudflare API token permissions: https://developers.cloudflare.com/fundamentals/api/reference/permissions/
 - Cloudflare Workers secrets: https://developers.cloudflare.com/workers/configuration/environment-variables/
 - Cloudflare Authenticated Origin Pulls: https://developers.cloudflare.com/ssl/origin-configuration/authenticated-origin-pull/
+- Cloudflare Tunnel overview: https://developers.cloudflare.com/tunnel/
+- Cloudflare Tunnel setup: https://developers.cloudflare.com/tunnel/setup/
+- Cloudflare Tunnel configuration: https://developers.cloudflare.com/tunnel/configuration/
+- Cloudflare Tunnel with firewall: https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/configure-tunnels/tunnel-with-firewall/
+- Cloudflare Tunnel tokens and rotation: https://developers.cloudflare.com/tunnel/advanced/tunnel-tokens/
+- Run cloudflared as a Linux service: https://developers.cloudflare.com/tunnel/advanced/local-management/as-a-service/linux/
 
 ## Incident / supplemental reading
 

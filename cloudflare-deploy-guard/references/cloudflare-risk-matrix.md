@@ -12,3 +12,4 @@
 | WAF/Bot | 一部機能はプラン依存 | crawler/攻撃で課金対象に到達 | expensive path無防備 | Rate Limiting、Bot、AI Crawl Control |
 | Secrets/API | token権限 | MCP/CI token過大、secret漏洩 | global key/vars secret | least privilege、secrets、audit logs |
 | Origin/DNS | origin負荷/侵害 | origin直接アクセス、IP漏洩 | AOP/allowlist未確認 | Authenticated Origin Pulls、proxy、Full(strict) |
+| Tunnel/Origin lockdown | Access seats、Logpush等は構成次第 | tunnel token漏洩、catch-all誤公開、connector停止、origin firewall未遮断 | public inbound開放、token平文、Accessなしadmin | Cloudflare Tunnel、inbound deny、7844 + 必要HTTPS egress、Access/Tailscale、catch-all deny、health監視 |

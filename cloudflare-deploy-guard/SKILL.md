@@ -1,11 +1,11 @@
 ---
 name: cloudflare-deploy-guard
-description: Cloudflareへデプロイ、設定変更、MCP/API変更を行う前に、意図しない従量課金・セキュリティ・Bot/Crawler・OpenNext/Next.js画像最適化・R2/KV/Durable Objects/Queues/D1/Workersのリスクを強制的に点検する。
+description: Cloudflareへデプロイ、設定変更、MCP/API変更を行う前に、意図しない従量課金・セキュリティ・Bot/Crawler・OpenNext/Next.js画像最適化・R2/KV/Durable Objects/Queues/D1/Workers・Cloudflare Tunnel/origin露出のリスクを強制的に点検する。
 ---
 
 # Cloudflare Deploy Guard
 
-このスキルは、Cloudflare公式MCP/Docs/API/Observabilityを補完する「デプロイ前ゲート」です。Cloudflareへのデプロイ、Wrangler設定変更、MCP経由の変更、課金対象プロダクト追加、Next.js/OpenNext移行、R2/Images/Workers/KV/Durable Objects/Queues/D1を触る作業では必ず実行します。
+このスキルは、Cloudflare公式MCP/Docs/API/Observabilityを補完する「デプロイ前ゲート」です。Cloudflareへのデプロイ、Wrangler設定変更、MCP経由の変更、課金対象プロダクト追加、Next.js/OpenNext移行、R2/Images/Workers/KV/Durable Objects/Queues/D1、Cloudflare Tunnel、Access、Zero Trust、origin firewallを触る作業では必ず実行します。
 
 ## 絶対ルール
 
@@ -24,6 +24,7 @@ description: Cloudflareへデプロイ、設定変更、MCP/API変更を行う�
 - R2、Cloudflare Images、Image Transformations、`next/image`、`/_next/image`、`/cdn-cgi/image`、画像プロキシ、キャッシュを扱う。
 - Workers KV、Durable Objects、Queues、D1、Hyperdrive、Vectorize、Workers AI、AI Gateway、Browser Rendering、Stream、Logpush、Load Balancing、Argoなど課金対象または高負荷対象を扱う。
 - WAF、Rate Limiting、Bot、AI Crawl Control、robots.txt、Turnstile、Access、API Token、DNS、SSL/TLS、Origin設定を扱う。
+- Cloudflare Tunnel / `cloudflared` / Zero Trust route / Hetzner・VPS firewall / Tailscale subnet / origin direct access制御を扱う。
 
 ## 必須アウトプット
 
@@ -38,7 +39,7 @@ DEPLOY: GO | NO-GO
 ブロッカー: <未解決ならDEPLOY:NO-GO>
 推奨対応: <優先順位順>
 コスト試算: expected / 10x / bot-crawler / bug-loop
-セキュリティ差分: <トークン/Secrets/WAF/Origin/DNS/認証>
+セキュリティ差分: <トークン/Secrets/WAF/Origin/DNS/認証/Tunnel/Access/firewall>
 キルスイッチ: <即時停止・緩和手順>
 ロールバック: <コマンドまたは手順>
 監視: <確認するメトリクス・閾値・通知先>
@@ -88,6 +89,7 @@ python .agents/skills/cloudflare-deploy-guard/scripts/cloudflare-static-risk-sca
 - Turnstile、Access、Zero Trust、Service Tokens。
 - API tokens、members、2FA、audit logs。
 - DNS proxy状態、SSL/TLS mode、Authenticated Origin Pulls、origin IP露出、Cache Rules。
+- Cloudflare Tunnel: tunnel ID/name、connector数、`Healthy` status、公開hostname、service URL、ingress catch-all、token保管場所、`cloudflared`実行方式、outbound firewall許可、origin inbound firewall状態。
 
 ## 手順 3: 課金リスクのブロッカー
 
@@ -197,6 +199,12 @@ python .agents/skills/cloudflare-deploy-guard/scripts/cloudflare-static-risk-sca
 - [ ] TurnstileやAccessで人間確認/管理画面保護が必要な箇所を守っている。
 - [ ] AI crawler/Botの許可・拒否方針を決め、robots.txtとAI Crawl Control/Block AI Botsを整備。
 - [ ] OriginはCloudflare経由以外で直接叩けない。必要に応じてAuthenticated Origin Pulls、IP allowlist、mTLS、Accessを使う。
+- [ ] VPS/origin公開が必要な場合はCloudflare Tunnelを第一候補にする。`cloudflared` がアウトバウンド接続を張り、public inbound 80/443/管理portを閉じられる構成か確認する。
+- [ ] Tunnel利用時はorigin firewallで不要な全inboundを拒否し、管理アクセスはTailscale/Cloudflare Access/限定SSHだけに絞る。Cloudflare Tunnel connector用のoutbound `7844` TCP/UDPを許可し、更新/API/Access検証/診断に必要なHTTPS egressは用途別に明示許可する。
+- [ ] `cloudflared` tunnel tokenはsecret扱い。repo、README、shell history、systemd unitの平文露出を避け、漏洩時はtoken rotate後に既存Tunnel接続をforce-disconnectし、全replicaを新tokenで再接続する手順を用意する。
+- [ ] Public hostnameのservice URLは原則 `localhost` / private IP を向け、originアプリは可能ならloopback/private interfaceだけでlistenする。
+- [ ] Tunnel ingressには明示的なhostnameごとのrouteとcatch-all deny/404を置く。意図しないsubdomainやadmin serviceを公開しない。
+- [ ] `cloudflared` はsystemd等で自動起動し、`Healthy` status、connector数、ログ、再起動loopを監視する。単一connectorがSPOFならreplicaを検討する。
 - [ ] SSL/TLS modeは原則Full(strict)。Flexibleは使わない。
 - [ ] DNS proxy状態、origin IP漏洩、不要subdomain、old staging domainを確認。
 - [ ] CORSは必要originのみ。`*` とcredentials併用などを避ける。
@@ -229,6 +237,7 @@ python .agents/skills/cloudflare-deploy-guard/scripts/cloudflare-static-risk-sca
 - Cron Triggerを無効化。
 - KV list fallback、legacy scan、async write、image optimizationを環境変数でoffにする。
 - R2 public/custom domainを止める、CORSを絞る、cache ruleを変更。
+- Tunnel route/public hostnameを削除またはAccess必須化し、`cloudflared` service停止、VPS firewallでpublic inbound denyを再確認する。
 - API tokenをrevoke/rotateし、audit logsを確認。
 
 ## 手順 7: 最終判定
@@ -247,6 +256,7 @@ python .agents/skills/cloudflare-deploy-guard/scripts/cloudflare-static-risk-sca
 - `next/image` + Images/R2 + crawler対策なし。
 - `kv.list()` / DO writes / Queue recursion / D1 scan / Worker route過大のいずれかが未解決。
 - Secrets、API tokens、WAF、Origin保護が未確認。
+- Tunnel導入時にorigin firewall、token保管、Access適用、health監視、rollbackが未確認。
 - ロールバックまたはキルスイッチがない。
 
 ## 同梱ファイル
@@ -254,5 +264,6 @@ python .agents/skills/cloudflare-deploy-guard/scripts/cloudflare-static-risk-sca
 - `references/source-links.md` — 公式Docs、価格、事故例の参照先。仕様・価格確認はここを入口にし、最新情報を公式Docsで再確認する。
 - `references/cloudflare-deploy-report-template.md` — `DEPLOY: GO / NO-GO` 判定レポートのテンプレート。
 - `references/cloudflare-cost-security-checklist.md` — 課金・セキュリティの詳細チェックリスト。
+- `references/cloudflare-tunnel-origin-lockdown.md` — Cloudflare TunnelでVPS/originを直叩き不能にするための点検項目。
 - `references/cloudflare-risk-matrix.md` — プロダクト別リスク表。
 - `scripts/cloudflare-static-risk-scan.py` — 静的リスクスキャン。
