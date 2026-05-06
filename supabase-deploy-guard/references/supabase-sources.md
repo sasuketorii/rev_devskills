@@ -1,0 +1,33 @@
+# 公式ソース
+
+- Cost Control / Spend Cap: https://supabase.com/docs/guides/platform/spend-cap
+- Billing overview: https://supabase.com/docs/guides/platform/billing-on-supabase
+- Billing FAQ: https://supabase.com/docs/guides/platform/billing-faq
+- Compute and Disk: https://supabase.com/docs/guides/platform/compute-and-disk
+- Manage Compute usage: https://supabase.com/docs/guides/platform/manage-your-usage/compute
+- Branching usage: https://supabase.com/docs/guides/platform/manage-your-usage/branching
+- Read Replicas: https://supabase.com/docs/guides/platform/read-replicas
+- Read Replica usage: https://supabase.com/docs/guides/platform/manage-your-usage/read-replicas
+- Disk Size usage: https://supabase.com/docs/guides/platform/manage-your-usage/disk-size
+- Database and Disk Size: https://supabase.com/docs/guides/platform/database-size
+- Egress usage: https://supabase.com/docs/guides/platform/manage-your-usage/egress
+- Edge Functions pricing: https://supabase.com/docs/guides/functions/pricing
+- Edge Function Invocations usage: https://supabase.com/docs/guides/platform/manage-your-usage/edge-function-invocations
+- Edge Functions limits: https://supabase.com/docs/guides/functions/limits
+- Edge Function secrets: https://supabase.com/docs/guides/functions/secrets
+- Storage pricing: https://supabase.com/docs/guides/storage/pricing
+- Storage Image Transformations: https://supabase.com/docs/guides/storage/serving/image-transformations
+- Realtime pricing: https://supabase.com/docs/guides/realtime/pricing
+- Auth rate limits: https://supabase.com/docs/guides/auth/rate-limits
+- Auth overview/pricing: https://supabase.com/docs/guides/auth
+- MFA: https://supabase.com/docs/guides/auth/auth-mfa
+- MFA Phone pricing: https://supabase.com/docs/guides/auth/auth-mfa/phone
+- Password security: https://supabase.com/docs/guides/auth/password-security
+- API keys: https://supabase.com/docs/guides/getting-started/api-keys
+- Securing data: https://supabase.com/docs/guides/database/secure-data
+- Securing API: https://supabase.com/docs/guides/api/securing-your-api
+- Row Level Security: https://supabase.com/docs/guides/database/postgres/row-level-security
+- Storage Access Control: https://supabase.com/docs/guides/storage/security/access-control
+- Log Drains: https://supabase.com/docs/guides/telemetry/log-drains
+- Log Drain usage: https://supabase.com/docs/guides/platform/manage-your-usage/log-drains
+- Management API: https://supabase.com/docs/reference/api/introduction

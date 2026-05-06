@@ -1,0 +1,23 @@
+# Example safe-ish Codex config baseline.
+# Copy only after reviewing against current official docs and your threat model.
+
+model = "gpt-5.3-codex"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+web_search = "cached"
+
+[sandbox_workspace_write]
+network_access = false
+
+# Prefer reusable permission profiles when your Codex version supports them.
+# Deny-read examples should be adjusted to your filesystem.
+# [permissions.safe.filesystem]
+# "/absolute/path/to/project/.env" = "none"
+# "/absolute/path/to/project/.ssh/**" = "none"
+# "/absolute/path/to/project/secrets/**" = "none"
+
+# Network should stay off by default. If a workflow absolutely needs it, create
+# narrow domain allowlists rather than enabling broad network access.
+# [permissions.docs-only.network.domains]
+# "developers.openai.com" = "allow"
+# "api.github.com" = "allow"

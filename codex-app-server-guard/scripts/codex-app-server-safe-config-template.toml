@@ -1,0 +1,31 @@
+# Safe-ish Codex config template for app-server/client integration review.
+# Adapt to your environment. Do not blindly copy to production.
+
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+allow_login_shell = false
+web_search = "cached"
+
+[sandbox_workspace_write]
+network_access = false
+
+# Example permission profile: workspace write, but deny common secret files.
+# Adjust syntax to the current Codex config reference before production.
+default_permissions = "workspace_guarded"
+
+[permissions.workspace_guarded.filesystem]
+":project_roots" = {
+  "." = "write",
+  "**/*.env" = "none",
+  "**/.env.*" = "none",
+  "**/*secret*" = "none",
+  "**/*credential*" = "none",
+  "**/*auth.json" = "none",
+  ".git" = "read",
+  ".codex" = "read",
+  ".agents" = "read"
+}
+glob_scan_max_depth = 4
+
+# Optional managed requirements should further restrict allowed sandbox modes,
+# approval policies, network domains, and Unix sockets at organization level.
