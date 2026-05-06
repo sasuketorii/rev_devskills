@@ -1,11 +1,21 @@
 ---
 name: go-skills-architecture
-version: 0.1.1-strict
-summary: REV-C / Sasuke 向けの Go 高負荷API・クローラー・AIエージェント・E2EE・データ基盤構築Skill。最新安定版を前提に、Go公式標準ライブラリと厳選moduleを使い分ける。
-description: Use this skill when designing, reviewing, or updating Go systems for REV-C projects: high-load crawlers, API backends, browser automation, AI agents, CRM/data/search platforms, messaging/workflows, TUI/CLI tools, and security-sensitive infrastructure. Prefer latest stable versions, pinned modules, official documentation, and strict CI/security checks.
+description: "Use this skill when designing, reviewing, or updating Go systems for REV-C projects: high-load crawlers, API backends, browser automation, AI agents, CRM/data/search platforms, messaging/workflows, TUI/CLI tools, and security-sensitive infrastructure. Prefer latest stable versions, pinned modules, official documentation, and strict CI/security checks."
+metadata:
+  version: 0.1.1-strict
+  summary: REV-C / Sasuke 向けの Go 高負荷API・クローラー・AIエージェント・E2EE・データ基盤構築Skill。最新安定版を前提に、Go公式標準ライブラリと厳選moduleを使い分ける。
 ---
 
 # GoSkills
+
+- **Version**: `v0.1.1-strict`
+- **Snapshot date**: 2026-05-06 JST
+- **Generated from**: `go-skills-master.md`
+- **Source registry**: `go-skills-sources.md`
+
+この `SKILL.md` は Codex / Claude Code / ChatGPT Skills の軽量入口。判断の本体は `go-skills-master.md`、根拠URLは `go-skills-sources.md`、分野別詳細は `references/` に置く。
+
+Dependency version、採用レーン、例外、移行判断を出すときは、必ず `go-skills-master.md` を先に読む。`SKILL.md` だけでmodule registerを確定しない。
 
 ## Mission
 
@@ -177,7 +187,7 @@ go test -bench=. -benchmem ./...
 
 ## References
 
-Detailed rules live in:
+Detailed rules live in these reference files. They are lane-level expansions generated from the master, not independent policy:
 
 - `references/runtime-toolchain.md`
 - `references/api-backend-rpc.md`

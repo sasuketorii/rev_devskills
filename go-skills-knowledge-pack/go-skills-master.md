@@ -7,7 +7,15 @@
 
 ---
 
-## 0. GoSkills の目的
+## 0. How to read this master
+
+このファイルが GoSkills の単一の真実源。`SKILL.md` は軽量入口、`references/` はこのmasterから分野別に切り出した詳細、`go-skills-sources.md` は公式ソースとregistry確認先。
+
+Version registerはsnapshotであり、Go release history、module tag、pkg.go.dev stability表示、vulnerability databaseは更新される。実repoでmoduleを提案・更新するときは、このmasterの方針を読み、`go-skills-sources.md` の公式ソースで現在値を再確認してから `go.mod` / `go.sum` とCIに反映する。
+
+---
+
+## 1. GoSkills の目的
 
 GoSkills は、RustSkills の低レイヤー・極限性能思想と、TypeScriptSkills のフルスタック/AIエージェント運用思想を Go へ写像するための実戦Skillである。
 
@@ -23,7 +31,7 @@ Go の強みは、以下の5点にある。
 
 ---
 
-## 1. REV-C向けGoドメインマップ
+## 2. REV-C向けGoドメインマップ
 
 ### 1.1 高負荷API / クローラー / フォーム送信
 
@@ -126,7 +134,7 @@ crypto/tls
 
 ---
 
-## 2. 採用レベル定義
+## 3. 採用レベル定義
 
 | レベル | 意味 | 例 |
 |---|---|---|
@@ -138,7 +146,7 @@ crypto/tls
 
 ---
 
-## 3. Core crate/module register
+## 4. Core module register
 
 | Module / Tool | Snapshot version | Tier | Role |
 |---|---:|---|---|
@@ -197,9 +205,9 @@ crypto/tls
 
 ---
 
-## 4. 実装ルール: Goで100点を狙うための非交渉ライン
+## 5. 実装ルール: Goで100点を狙うための非交渉ライン
 
-### 4.1 並行処理
+### 5.1 並行処理
 
 - goroutineを無制限に作らない。
 - `context.Context` を第一引数に通す。
@@ -207,7 +215,7 @@ crypto/tls
 - worker queue は bounded channel を基本にする。
 - CPU-bound と I/O-bound を同じqueueに混ぜない。
 
-### 4.2 HTTP
+### 5.2 HTTP
 
 - `http.Client` と `http.Transport` をリクエストごとに作らない。
 - `Response.Body.Close()` は必ず行う。
@@ -215,14 +223,14 @@ crypto/tls
 - リトライは冪等性・body rewind・ステータス分類を明示する。
 - 相手先別 rate limit と全体 concurrency limit を分ける。
 
-### 4.3 JSON / bytes
+### 5.3 JSON / bytes
 
 - デフォルトは `encoding/json`。
 - Hot path のみ `sonic` / `go-json` をベンチ後に導入。
 - `[]byte -> string -> []byte` の往復を避ける。
 - 大量イベントでは `json.Decoder` streaming と `io.Reader` pipeline を優先。
 
-### 4.4 DB
+### 5.4 DB
 
 - PostgreSQLは `pgx` を第一候補。
 - SQLは `sqlc` で型安全コード生成。
@@ -230,14 +238,14 @@ crypto/tls
 - `SELECT *`、巨大 `fetch all`、長時間transactionを禁止。
 - `context` timeout と pool saturation を監視する。
 
-### 4.5 Observability
+### 5.5 Observability
 
 - 全リクエスト・ジョブ・AI tool call に correlation id を持つ。
 - ログは `slog` または `zap`/`zerolog` の構造化ログ。
 - TraceはOpenTelemetry、metricsはPrometheus。
 - 高負荷系は `pprof`, `runtime/metrics`, allocation profile をCI/benchで見る。
 
-### 4.6 Security
+### 5.6 Security
 
 - `govulncheck ./...` は必須。
 - `gosec ./...` はCIでSARIF化。
@@ -247,7 +255,7 @@ crypto/tls
 
 ---
 
-## 5. 参照構造
+## 6. 参照構造
 
 - `SKILL.md`: Codex/Claude向けの軽量Skillハブ。
 - `go-skills-update-prompt.md`: ChatGPT / Claude / Gemini Deep Research でGoSkillsを更新するためのプロンプト。

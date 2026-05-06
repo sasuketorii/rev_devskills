@@ -36,3 +36,11 @@ python .agents/skills/codex-app-server-guard/scripts/codex-app-server-cost-estim
 ```
 
 価格は必ず公式pricingで更新してください。
+
+Safe configテンプレートの正本:
+
+```text
+references/codex-safe-config-template.toml
+```
+
+`scripts/codex-app-server-safe-config-template.toml` は旧参照互換のredirect stubです。

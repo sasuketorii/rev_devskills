@@ -19,3 +19,10 @@ cp -R cloudflare-deploy-guard .agents/skills/
 ```bash
 python .agents/skills/cloudflare-deploy-guard/scripts/cloudflare-static-risk-scan.py . --markdown
 ```
+
+同梱ファイル:
+
+- `references/source-links.md` — 公式Docs、価格、事故例の参照入口。
+- `references/cloudflare-deploy-report-template.md` — `DEPLOY: GO / NO-GO` レポートテンプレート。
+- `references/cloudflare-cost-security-checklist.md` — 詳細チェックリスト。
+- `references/cloudflare-risk-matrix.md` — リスク表。

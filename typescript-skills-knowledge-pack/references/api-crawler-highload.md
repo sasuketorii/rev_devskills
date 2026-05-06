@@ -3,21 +3,21 @@
 ## Core stack
 
 - API: Hono or Fastify
-- HTTP hot path: `undici` v8.1.0
+- HTTP hot path: `undici` v8.2.0 at late 2026-05-06 recheck
 - Static HTML: Cheerio / parse5 / htmlparser2
 - JS-rendered pages: Playwright / Crawlee only when required
 - Concurrency: p-limit / p-queue
 - Rate limiting: bottleneck / framework-specific rate limit
 - Policy: robots-parser, allowlist, audit log
 
-## Critical correction
+## Critical package boundary
 
 `undici` and `undici-types` are different packages.
 
-- Runtime package: `undici` v8.1.0 at snapshot.
-- Type package: `undici-types` v8.2.0 at snapshot.
+- Runtime package: `undici` v8.2.0 at late 2026-05-06 recheck.
+- Type package: `undici-types` v8.2.0 at late 2026-05-06 recheck.
 
-Do not copy `undici-types` version into the runtime package register.
+Do not copy `undici-types` version into the runtime package register. They currently match, but they are not the same package.
 
 ## Architecture
 

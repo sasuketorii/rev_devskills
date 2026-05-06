@@ -114,7 +114,8 @@ python .agents/skills/supabase-deploy-guard/scripts/supabase-cost-scenario-estim
 - `references/supabase-cost-security-checklist.md` — 詳細チェックリスト。
 - `references/supabase-risk-matrix.md` — 課金・セキュリティリスク表。
 - `references/supabase-mcp-playbook.md` — MCP/Agent運用手順。
-- `references/supabase-sources.md` / `references/source-links.md` — 公式データソース。
+- `references/source-links.md` — 公式データソースの正本。価格・仕様確認はこのファイルを入口にする。
+- `references/data-sources.md` / `references/source-manifest.md` / `references/supabase-sources.md` — legacy/derived redirect。新規更新は `references/source-links.md` に集約する。
 - `prompts/codex-prompt.md` — Codexへ貼る短縮プロンプト。
 - `scripts/supabase-static-risk-scan.py` — 静的リスクスキャン。
 - `scripts/supabase-db-audit.sql` / `scripts/supabase-inventory-audit.sql` — DB監査SQL。

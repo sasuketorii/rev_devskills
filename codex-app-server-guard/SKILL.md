@@ -290,3 +290,15 @@ tool/app/MCP | enabled? | default approval | destructive? | network? | productio
 - Schema/version is pinned and smoke-tested.
 - Logs/transcripts have redaction, retention, and access control.
 - Emergency kill switch is tested.
+
+## 同梱ファイル
+
+- `references/codex-safe-config-template.toml` — app-server/client統合レビュー用safe configテンプレートの正本。
+- `scripts/codex-app-server-safe-config-template.toml` — legacy redirect stub。新規更新は `references/codex-safe-config-template.toml` に集約する。
+- `references/codex-app-server-report-template.md` — run/deployレビュー用レポートテンプレート。
+- `references/codex-app-server-deploy-report-template.md` — deployレビュー用レポートテンプレート。
+- `references/source-links.md` — 公式Docsと参照先。
+- `scripts/codex-app-server-static-risk-scan.py` — 静的リスクスキャン。
+- `scripts/codex-app-server-launch-guard.py` — 起動コマンド確認。
+- `scripts/codex-app-server-smoke-test.py` — stdio smoke test。
+- `scripts/codex-app-server-cost-estimator.py` — usage/cost概算。

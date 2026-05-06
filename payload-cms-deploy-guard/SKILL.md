@@ -9,6 +9,19 @@ description: Use before any Payload CMS production deploy, payload.config.ts cha
 
 公式のPayload Skillは実装・設計・デバッグに使い、このSkillはリリース前に必ず通す **DEPLOY: GO / NO-GO 判定**として使います。
 
+## 同梱ファイル
+
+- `references/source-links.md` — Payload公式Docs、Pricing、adapter、uploads、Jobs、deploymentの参照先。仕様・価格確認はここを入口にする。
+- `references/payload-cms-cost-security-checklist.md` — 課金・セキュリティ・運用事故の詳細チェックリスト。
+- `references/payload-cms-risk-matrix.md` — hosting、DB、storage、images、GraphQL、jobs、外部APIのリスク表。
+- `references/payload-cms-deploy-report-template.md` — `DEPLOY: GO / NO-GO` 判定レポートのテンプレート。
+- `references/payload-cms-official-skill-playbook.md` — 公式Payload SkillとこのDeploy Guardの使い分け。
+- `prompts/codex-payload-cms-deploy-review-prompt.md` — Codexへ貼る短縮レビュー指示。
+- `scripts/payload-cms-static-risk-scan.py` — 静的リスクスキャン。
+- `scripts/payload-cms-postgres-audit.sql` / `scripts/payload-cms-mongo-audit.js` — DB adapter別のread-only監査。
+- `scripts/payload-cms-runtime-probe.py` — 自分のstaging/productionだけに使う軽量runtime probe。
+- `scripts/payload-cms-cost-scenario-estimator.py` — 課金メーター洗い出し用の概算テンプレート。
+
 ## 公式Skillとの併用
 
 先に公式Payload Skillsを入れる。
@@ -106,7 +119,29 @@ python .agents/skills/payload-cms-deploy-guard/scripts/payload-cms-static-risk-s
 
 スキャンが使えない場合は、同等の観点を手で確認する。secret値は絶対に出力せず、ファイル名・行番号・種別だけ出す。
 
-### 3. 公式Payload Skillを使って設計を確認する
+### 3. DB/Runtime監査を実行する
+
+対象adapterと環境に応じて、stagingまたはread-only userで先に実行する。productionに対して実行する場合は、接続先、権限、負荷、出力にsecret/PIIが含まれないことを確認してから行う。
+
+Postgres adapter:
+
+```bash
+psql "$DATABASE_URL" -f .agents/skills/payload-cms-deploy-guard/scripts/payload-cms-postgres-audit.sql
+```
+
+MongoDB adapter:
+
+```bash
+mongosh "$MONGODB_URI" .agents/skills/payload-cms-deploy-guard/scripts/payload-cms-mongo-audit.js
+```
+
+自分のstaging/productionドメインだけに対して、CORS、GraphQL到達性、GraphQL introspectionを軽く確認する。
+
+```bash
+python .agents/skills/payload-cms-deploy-guard/scripts/payload-cms-runtime-probe.py https://example.com
+```
+
+### 4. 公式Payload Skillを使って設計を確認する
 
 公式Skillを使って、以下を確認する。
 
@@ -117,7 +152,7 @@ python .agents/skills/payload-cms-deploy-guard/scripts/payload-cms-static-risk-s
 - Jobs Queueのtask/workflow/queue/schedule/autoRunが安全か
 - migrationがPostgres/Mongo/SQLite adapterの期待動作に沿っているか
 
-### 4. Access Controlを監査する
+### 5. Access Controlを監査する
 
 Collectionごとに表を作る。
 
@@ -142,7 +177,7 @@ REST/GraphQL exposure: <enabled/disabled + limits>
 - multi-tenant collectionでtenant filterがaccess/read/queryの全経路に入っていない
 - custom endpointが`req.user`、role、tenant、method、body size、rate limitを確認していない
 
-### 5. API abuseを監査する
+### 6. API abuseを監査する
 
 以下を必須確認する。
 
@@ -153,7 +188,7 @@ REST/GraphQL exposure: <enabled/disabled + limits>
 - Next.js cache: user-specific response、cookie response、draft response、admin/API responseを共有cacheしない
 - Search/filter: unbounded regex、full text、sort without index、relationship deep sortを制限する
 
-### 6. Uploadsと画像処理を監査する
+### 7. Uploadsと画像処理を監査する
 
 Upload collectionごとに次を確認する。
 
@@ -179,7 +214,7 @@ storage ops/egress scenario: <normal/bot/abuse>
 - imageSizes/Sharp/Next Image/CDN transformationをbotや任意variantに開放
 - upload hookが外部API、AI、search indexing、emailを無制限に呼ぶ
 
-### 7. Jobs Queue、hooks、cronを監査する
+### 8. Jobs Queue、hooks、cronを監査する
 
 以下を必須確認する。
 
@@ -190,7 +225,7 @@ storage ops/egress scenario: <normal/bot/abuse>
 - retry、timeout、dead-letter相当、manual pause、purge、kill switchがある。
 - jobs collectionの肥大化、retention、cleanup、indexを確認する。
 
-### 8. DB migrationとadapterを監査する
+### 9. DB migrationとadapterを監査する
 
 Postgres/Mongo/SQLite adapterごとに確認する。
 
@@ -201,7 +236,7 @@ Postgres/Mongo/SQLite adapterごとに確認する。
 - versions/drafts/localization/array/block/join fieldsのstorage増加を試算する。
 - DB connection pooling、serverless cold start、max connections、statement timeoutを確認する。
 
-### 9. 課金シナリオを作る
+### 10. 課金シナリオを作る
 
 `references/payload-cms-risk-matrix.md`を見ながら、normal / bot / bug / retry / previewの5パターンを出す。
 
@@ -215,7 +250,7 @@ Postgres/Mongo/SQLite adapterごとに確認する。
 - Search/AI: embeddings、indexing、LLM tokens、vector DB/search provider
 - Jobs: retries、scheduled tasks、external API calls、queue backlog
 
-### 10. Emergency stopを用意する
+### 11. Emergency stopを用意する
 
 最低限、次を用意する。
 

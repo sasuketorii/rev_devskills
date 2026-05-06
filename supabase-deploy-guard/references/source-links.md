@@ -1,5 +1,7 @@
 # Source Links
 
+このファイルをSupabase Deploy Guardの公式ソース正本とする。`data-sources.md`、`source-manifest.md`、`supabase-sources.md`はlegacy/derived redirectとして扱い、新規更新はここに集約する。
+
 仕様・価格は変更されるため、デプロイ前に必ず公式DocsまたはPricingで再確認する。
 
 ## Official Supabase sources
@@ -38,6 +40,11 @@
 - Custom SMTP: https://supabase.com/docs/guides/auth/auth-smtp
 - Edge Function secrets: https://supabase.com/docs/guides/functions/secrets
 - Securing Edge Functions: https://supabase.com/docs/guides/functions/auth
+- API keys: https://supabase.com/docs/guides/getting-started/api-keys
+- Production checklist: https://supabase.com/docs/guides/deployment/going-into-prod
+- Database backups: https://supabase.com/docs/guides/platform/backups
+- Edge Function limits: https://supabase.com/docs/guides/functions/limits
+- Function configuration / verify_jwt: https://supabase.com/docs/guides/functions/function-configuration
 - Access Control: https://supabase.com/docs/guides/platform/access-control
 - Network Restrictions: https://supabase.com/docs/guides/platform/network-restrictions
 - SSL Enforcement: https://supabase.com/docs/guides/platform/ssl-enforcement
@@ -50,8 +57,3 @@
 - Supabase RLSセキュリティ設計の解説例: https://www.atoshimatsu.com/articles/supabase-rls-security-risks
 - Supabase RLS設計パターン解説例: https://note.com/questceo_ai/n/nf27d283754fc
 - Supabase概要の日本語解説例: https://qiita.com/UKI_datascience/items/19d690753890b63a29c6
-- API keys: https://supabase.com/docs/guides/getting-started/api-keys
-- Production checklist: https://supabase.com/docs/guides/deployment/going-into-prod
-- Database backups: https://supabase.com/docs/guides/platform/backups
-- Edge Function limits: https://supabase.com/docs/guides/functions/limits
-- Function configuration / verify_jwt: https://supabase.com/docs/guides/functions/function-configuration

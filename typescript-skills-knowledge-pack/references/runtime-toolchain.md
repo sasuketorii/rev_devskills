@@ -19,7 +19,7 @@
 | pnpm 10 | v10.33.3 | Hold only for legacy Node |
 | @types/node@24 | v24.12.2 | production Node 24 typings |
 | @types/node | v25.6.0 | Current/type compatibility watch |
-| @swc/core | v1.15.32 | corrected Core/Adopt |
+| @swc/core | v1.15.33 | Core/Adopt; verify separately from wasm |
 | @swc/wasm | v1.15.33 | separate package; do not mix |
 
 ## package.json baseline

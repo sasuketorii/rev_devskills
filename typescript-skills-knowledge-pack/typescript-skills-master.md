@@ -1,17 +1,24 @@
 # TypeScriptSkills Master
 
-- **Version**: `v0.1.1-strict`
+- **Version**: `v0.1.2`
 - **Snapshot date**: 2026-05-06 JST
+- **Registry check**: 2026-05-06 JST late recheck via npm registry
 - **Owner context**: Sasuke / REV-C Inc. / RustSkills連携
 - **Goal**: RustSkills と同等に、TypeScriptでも「最新安定版・高負荷・AI agent・Web Builder・E2EE・データ基盤・更新しやすさ」を満たす技術体系を作る。
 
-## 0. Strict fact-check summary
+## 0. How to read this master
 
-v0.1.0は方向性として強いが、100点ではなかった。厳格監査で以下を修正した。
+このファイルが TypeScriptSkills の単一の真実源。`SKILL.md` は軽量入口、`references/` はこのmasterから分野別に切り出した詳細、`typescript-skills-sources.md` は公式ソースとregistry確認先。
+
+Version registerはsnapshotであり、npm dist-tag、Node LTS/Current、package engineは同日中にも変わり得る。実repoでdependencyを提案・更新するときは、このmasterの方針を読み、`typescript-skills-sources.md` の公式ソースで現在値を再確認してから lockfile とCIに反映する。
+
+## 0.1 Audit history
+
+この節は履歴であり、現在のpackage version指示そのものではない。
 
 1. `README.md` と `references/` 実ファイル数が不一致だったため、10本の参照ファイルに再構成した。
-2. `undici v8.2.0` は誤り。snapshot時点では `undici v8.1.0`。`undici-types v8.2.0` との取り違えを修正。
-3. `@swc/core v1.15.33` は誤り。snapshot時点では `@swc/core v1.15.32`。`@swc/wasm v1.15.33` との取り違えを修正。
+2. `v0.1.1-strict` early snapshotでは `undici v8.2.0` を `undici v8.1.0` に戻し、`undici-types v8.2.0` との取り違えを修正した。late recheckでは `undici` も v8.2.0。
+3. `v0.1.1-strict` early snapshotでは `@swc/core v1.15.33` を `@swc/core v1.15.32` に戻し、`@swc/wasm v1.15.33` との取り違えを修正した。late recheckでは `@swc/core` も v1.15.33。
 4. `pnpm` は npm registry の latest dist-tag と公式 v11 line がズレる可能性がある。Node 24 LTS workspaceでは `pnpm@11.0.6` を標準候補にする。
 5. `@types/node` は npm最新だけではなく、実行Node majorへ合わせる。Node 24 LTS本番では `@types/node@24.12.2`、Current検証では `@types/node@25.6.0` を見る。
 6. `tsd` / `publint` / `@arethetypeswrong/cli` / `web-vitals` / `happy-dom` / `wrangler` / `miniflare` を明示的に追加した。
@@ -53,7 +60,7 @@ v0.1.0は方向性として強いが、100点ではなかった。厳格監査�
 | tsx | v4.21.0 | Core | TS runner | dev scripts |
 | vite | v8.0.10 | Core | build/dev server | frontend + library dev |
 | esbuild | v0.28.0 | Core | bundling/minify | fast transform |
-| @swc/core | v1.15.32 | Adopt | transpile | `@swc/wasm`と混同しない |
+| @swc/core | v1.15.33 | Adopt | transpile | `@swc/wasm`と別packageとして確認 |
 | @swc/wasm | v1.15.33 | R&D | wasm SWC | coreとはversion差あり |
 | turbo | v2.9.9 | Adopt | monorepo tasks | large workspace |
 | nx | v22.7.1 | Adopt | monorepo governance | more structured monorepo |
@@ -100,7 +107,7 @@ v0.1.0は方向性として強いが、100点ではなかった。厳格監査�
 | fastify | v5.8.5 | Core | Node API server | plugins/perf |
 | @fastify/rate-limit | v10.3.0 | Core | rate limit | public API |
 | @fastify/cors | v11.2.0 | Core | CORS | API hardening |
-| undici | v8.1.0 | Core | HTTP client/hot path | corrected from v8.2.0 |
+| undici | v8.2.0 | Core | HTTP client/hot path | late recheck; keep separate from `undici-types` |
 | undici-types | v8.2.0 | Support | TS types for undici | separate package |
 | @trpc/server | v11.17.0 | Adopt | typed RPC | internal apps |
 | @hono/zod-openapi | latest stable | Adopt | OpenAPI contracts | API-first Hono |

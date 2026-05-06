@@ -5,12 +5,15 @@ description: TypeScriptSkills / REV-C Inc. systems architecture skill. Use when 
 
 # TypeScriptSkills Skill Hub
 
-- **Version**: `v0.1.1-strict`
+- **Version**: `v0.1.2`
 - **Snapshot date**: 2026-05-06 JST
+- **Registry check**: 2026-05-06 JST late recheck via npm registry
 - **Generated from**: `typescript-skills-master.md`
 - **Target context**: Sasuke / REV-C Inc. / RustSkills連携 / TypeScriptSkills / CCTeam / Social Psychometrics CRM / Web Builder / AI Agent / 高負荷API・Crawler / E2EE / Data Platform
 
-この `SKILL.md` は Codex / Claude Code / ChatGPT Skills の軽量入口。詳細は `typescript-skills-master.md`、`typescript-skills-sources.md`、`references/` に分割する。
+この `SKILL.md` は Codex / Claude Code / ChatGPT Skills の軽量入口。判断の本体は `typescript-skills-master.md`、根拠URLは `typescript-skills-sources.md`、分野別の詳細は `references/` に置く。
+
+Dependency version、採用レーン、例外、移行判断を出すときは、必ず `typescript-skills-master.md` を先に読む。`SKILL.md` だけで version register を確定しない。
 
 ## 1. Non-negotiable rules
 
@@ -41,7 +44,7 @@ description: TypeScriptSkills / REV-C Inc. systems architecture skill. Use when 
 | Testing/Release Quality | Vitest/Playwright/Biome/ESLint/tsd/publint/ATTW/happy-dom/web-vitals | `references/testing-release-quality.md` |
 | Observability/Governance | pino/OTel/Sentry/OSV/Renovate/npm audit/provenance | `references/observability-governance.md` |
 
-Always use `typescript-skills-master.md` as the single source of truth and `typescript-skills-sources.md` as the source registry.
+Always use `typescript-skills-master.md` as the single source of truth and `typescript-skills-sources.md` as the source registry. The reference files are lane-level expansions generated from the master, not independent policy.
 
 ## 3. Canonical architecture patterns
 
@@ -97,9 +100,9 @@ jose for JWT/JWE/JWS/OIDC
 
 | Trap | Correct rule |
 |---|---|
-| `undici` vs `undici-types` | `undici` latest stable at snapshot is v8.1.0; `undici-types` is a separate package. Do not copy its version into `undici`. |
-| `@swc/core` vs `@swc/wasm` | `@swc/core` latest stable at snapshot is v1.15.32; `@swc/wasm` can be different. |
-| `pnpm` dist-tag vs official v11 | pnpm v11 is stable and Node 22+; npm `latest` can lag on v10. Pin `packageManager` explicitly. |
+| `undici` vs `undici-types` | They are separate packages. At the late 2026-05-06 recheck both resolve to v8.2.0, but future equality must not be assumed. |
+| `@swc/core` vs `@swc/wasm` | They are separate packages. At the late 2026-05-06 recheck both resolve to v1.15.33, but verify each package independently. |
+| `pnpm` dist-tag vs official v11 | npm `latest` resolves to pnpm 10.33.3 while `latest-11` resolves to 11.0.6. For Node 24+ pin `packageManager` explicitly to the chosen line. |
 | `@types/node` | Match runtime major. Node 24 LTS => `@types/node@24`, not blindly npm latest. |
 | Rolldown | If latest is rc/canary, keep R&D. Do not mark as stable core. |
 

@@ -249,24 +249,10 @@ python .agents/skills/cloudflare-deploy-guard/scripts/cloudflare-static-risk-sca
 - Secrets、API tokens、WAF、Origin保護が未確認。
 - ロールバックまたはキルスイッチがない。
 
-## 参考ドキュメント
+## 同梱ファイル
 
-- OpenAI Codex Skills: https://developers.openai.com/codex/skills
-- Cloudflare Codex setup: https://developers.cloudflare.com/agent-setup/codex/
-- Cloudflare MCP servers: https://developers.cloudflare.com/agents/model-context-protocol/mcp-servers-for-cloudflare/
-- Cloudflare Billing / Budget alerts: https://developers.cloudflare.com/billing/manage/budget-alerts/
-- Cloudflare Billable Usage: https://developers.cloudflare.com/billing/manage/billable-usage/
-- Cloudflare Images pricing: https://developers.cloudflare.com/images/pricing/
-- OpenNext Cloudflare image optimization: https://opennext.js.org/cloudflare/howtos/image
-- Cloudflare Workers pricing: https://developers.cloudflare.com/workers/platform/pricing/
-- Cloudflare R2 pricing: https://developers.cloudflare.com/r2/pricing/
-- Cloudflare KV pricing: https://developers.cloudflare.com/kv/platform/pricing/
-- Cloudflare Durable Objects pricing: https://developers.cloudflare.com/durable-objects/platform/pricing/
-- Cloudflare Queues pricing: https://developers.cloudflare.com/queues/platform/pricing/
-- Cloudflare D1 pricing: https://developers.cloudflare.com/d1/platform/pricing/
-- Cloudflare WAF Rate Limiting: https://developers.cloudflare.com/waf/rate-limiting-rules/
-- Cloudflare AI Crawl Control: https://developers.cloudflare.com/ai-crawl-control/
-- Cloudflare API token permissions: https://developers.cloudflare.com/fundamentals/api/reference/permissions/
-- Cloudflare Workers secrets: https://developers.cloudflare.com/workers/configuration/environment-variables/
-- Cloudflare Authenticated Origin Pulls: https://developers.cloudflare.com/ssl/origin-configuration/authenticated-origin-pull/
-- ServerlessHorrors Cloudflare $36k case: https://serverlesshorrors.com/all/cloudflare-36k/
+- `references/source-links.md` — 公式Docs、価格、事故例の参照先。仕様・価格確認はここを入口にし、最新情報を公式Docsで再確認する。
+- `references/cloudflare-deploy-report-template.md` — `DEPLOY: GO / NO-GO` 判定レポートのテンプレート。
+- `references/cloudflare-cost-security-checklist.md` — 課金・セキュリティの詳細チェックリスト。
+- `references/cloudflare-risk-matrix.md` — プロダクト別リスク表。
+- `scripts/cloudflare-static-risk-scan.py` — 静的リスクスキャン。

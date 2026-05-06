@@ -2,7 +2,9 @@
 
 ## Purpose
 
-This repository uses TypeScriptSkills v0.1.1-strict as the architecture and dependency-governance standard for REV-C / Sasuke TypeScript systems.
+This repository uses TypeScriptSkills v0.1.2 as the architecture and dependency-governance standard for REV-C / Sasuke TypeScript systems.
+
+`typescript-skills-master.md` is the single source of truth. `SKILL.md` is only the compact skill entrypoint; do not treat it as the full version register.
 
 ## Hard rules
 

@@ -1,7 +1,8 @@
 # TypeScriptSkills Source Index
 
-- **Version**: `v0.1.1-strict`
+- **Version**: `v0.1.2`
 - **Snapshot date**: 2026-05-06 JST
+- **Registry check**: 2026-05-06 JST late recheck via npm registry
 - **Rule**: 公式ドキュメント、npm registry、GitHub releases、security advisoryを優先する。非公式記事は補助に限定する。
 
 ## Runtime / language / package manager
@@ -121,8 +122,8 @@
 
 | Issue | Correct handling |
 |---|---|
-| `undici` vs `undici-types` | Keep as separate source rows; never copy type package version to runtime package |
-| `@swc/core` vs `@swc/wasm` | Verify exact scoped package; wasm and core versions may differ |
-| pnpm 11 vs npm latest dist-tag | Use official releases/installation for v11, but watch npm dist-tag and Node engine |
+| `undici` vs `undici-types` | Keep as separate source rows; never copy type package version to runtime package, even when versions currently match |
+| `@swc/core` vs `@swc/wasm` | Verify exact scoped package independently, even when versions currently match |
+| pnpm 11 vs npm latest dist-tag | Use official releases/installation for v11, but watch npm dist-tag and Node engine; npm `latest` can point to v10 while `latest-11` points to v11 |
 | `@types/node` | Use runtime-major version, not blind latest |
 | pre/rc/canary | Never mark as Core stable |
