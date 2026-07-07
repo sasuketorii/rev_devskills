@@ -19,11 +19,11 @@
 
 ---
 
-> 8 Skills. 4 production deploy guards. 3 language knowledge packs. 1 repo hygiene guard. 134 static-scan rules. 60+ SQL audit checks. 80+ Rust crates / 120+ npm package entries / 40+ Go modules — knowledge packs は version register、snapshot 日付、自己採点付き。
+> 9 Skills. 4 production deploy guards. 3 language knowledge packs. 1 repo hygiene guard. 1 design canon. 134 static-scan rules. 60+ SQL audit checks. 80+ Rust crates / 120+ npm package entries / 40+ Go modules — knowledge packs は version register、snapshot 日付、自己採点付き。
 >
 > **READMEではなく、防具であり、武器であり、履歴書です。**
 
-これは REV-C Asia CEO 兼 Developer の **鳥居 佐助 (Sasuke Torii)** が、Codex と Claude Code に本番権限を渡しながら積み上げてきた判断の結晶を、AI エージェントが読める形に圧縮したアーカイブです。Cloudflare の課金が一晩で吹き飛びかける夜、Supabase の RLS が一行抜けていた朝、Codex `app-server` の起動オプションが安全境界を曖昧にしていたコミット、Payload CMS の Local API が public route から呼ばれていたプルリク — そのひとつひとつから逆算して、「次に同じことを踏まないために、エージェントが何を読んでから動くべきか」を 8 つの Skill にまとめてあります。便利スクリプト集ではなく、本番にエージェントを置くということを真剣に扱うための土台です。
+これは REV-C Asia CEO 兼 Developer の **鳥居 佐助 (Sasuke Torii)** が、Codex と Claude Code に本番権限を渡しながら積み上げてきた判断の結晶を、AI エージェントが読める形に圧縮したアーカイブです。Cloudflare の課金が一晩で吹き飛びかける夜、Supabase の RLS が一行抜けていた朝、Codex `app-server` の起動オプションが安全境界を曖昧にしていたコミット、Payload CMS の Local API が public route から呼ばれていたプルリク — そのひとつひとつから逆算して、「次に同じことを踏まないために、エージェントが何を読んでから動くべきか」を 9 つの Skill にまとめてあります。便利スクリプト集ではなく、本番にエージェントを置くということを真剣に扱うための土台です。
 
 対象は **CCTeam / Social Psychometrics CRM / 高負荷送信基盤 / Leptos Web Builder / TUI AI Agent / E2EE Infrastructure** — REV-C Asia の実プロダクト群を支えるために書かれ、運用されています。
 
@@ -60,6 +60,7 @@ REV DevSkills は、これらを「人間の経験と勘」ではなく **静的
 | Knowledge Pack | [`rust-skills-knowledge-pack/`](rust-skills-knowledge-pack/) | Rust で async worker / Leptos+WASM / TUI+audio agent / E2EE / hot path / data+search を焼き切るための判断基準 | 2026-04-29 / v0.1.2 |
 | Deploy Guard | [`supabase-deploy-guard/`](supabase-deploy-guard/) | Supabase の RLS / GRANT / Auth / Storage / Realtime / Edge Functions / MCP 操作 / branch+add-on 課金を点検する | 2026-05-06 |
 | Knowledge Pack | [`typescript-skills-knowledge-pack/`](typescript-skills-knowledge-pack/) | TypeScript / Node.js / Web / AI Agent / Edge / Data / crawler / E2EE の設計と dependency governance | 2026-05-06 / v0.1.2 |
+| Design Canon | [`revc-canonical-login-screen/`](revc-canonical-login-screen/) | REV-C 全プロダクトのログイン画面(WebGL shader 背景 + backdrop-blur カード)の正本・移植手順・全ソース | 2026-07-08 |
 
 ### Coverage Matrix
 
@@ -73,10 +74,11 @@ REV DevSkills は、これらを「人間の経験と勘」ではなく **静的
 | `rust-skills-knowledge-pack`       |      | ✅       |        | ✅     |         |
 | `go-skills-knowledge-pack`         |      | ✅       |        | ✅     |         |
 | `typescript-skills-knowledge-pack` |      | ✅       |        | ✅     |         |
+| `revc-canonical-login-screen`      |      |          |        | ✅     |         |
 
 ## Core Philosophy
 
-8 つの Skill すべてを横断する非交渉ルール。
+9 つの Skill すべてを横断する非交渉ルール。
 
 - **Latest stable first** — 原則は最新安定版。ただし `prerelease / canary / experimental / v0.x / yanked` は R&D / Watch として扱う。snapshot 日付と version を必ず明記する。
 - **Production before aesthetics** — 見た目や抽象化より、実運用で壊れない境界、rollback、監視、kill switch を優先する。
@@ -207,7 +209,7 @@ Node 24 LTS / pnpm 11.0.6 / TypeScript 最新を起点に、**10 分野 × 120+ 
 
 ## Multi-Skill Interop
 
-8 つの Skill を AI エージェントに同時にロードしたとき、衝突は次の優先順位で解決します。
+9 つの Skill を AI エージェントに同時にロードしたとき、衝突は次の優先順位で解決します。
 
 1. **Repo hygiene** — `naming-normalization-guard` は新規追加 / リネーム時に最初に走る
 2. **Security / compliance / secrets** — platform-specific official docs と `AGENTS.md` が言語選好を override
@@ -255,7 +257,7 @@ Node 24 LTS / pnpm 11.0.6 / TypeScript 最新を起点に、**10 分野 × 120+ 
 
 | | |
 |---|---|
-| Skills (合計) | **8** (Deploy Guard 4 + Knowledge Pack 3 + Repo Hygiene 1) |
+| Skills (合計) | **9** (Deploy Guard 4 + Knowledge Pack 3 + Repo Hygiene 1 + Design Canon 1) |
 | Rust crates pinned | **80+** (`A001`〜`U010` の Decision Records) |
 | npm package entries | **120+** (Runtime / Frontend / API / AI / Crypto / Data / Testing) |
 | Go modules pinned | **40+** (Core / Adopt / Watch / R&D / Hold) |
